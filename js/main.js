@@ -786,9 +786,11 @@ async function getBetsByRound(){
     
 }
 
-async function withdrawMoney(roundId){
+async function withdrawMoney(){
     var accounts = await ethereum.request({method: 'eth_requestAccounts'});
     var account = accounts[0];
+
+    var roundId = localStorage.getItem("roundbet");
     
 
     const contractNetwork = xrpBettingContractId;
@@ -797,30 +799,16 @@ async function withdrawMoney(roundId){
     var contractPublic = await getContract(web3,contractNetwork,account);
 
     if(contractPublic != undefined) {
-        // var amountToCollect = 0;
-        // var contentInfo = await ethereum
-        //       .request({
-        //         method: 'eth_call',
-        //         params: [
-        //           {
-        //             from: account, // The user's active address.
-        //             data: contractPublic.methods.withdrawWinnings(roundId).encodeABI(),
-        //             to: contractNetwork
-        //           },
-        //         ],
-        //       });
-        // contentInfo = iface.decodeFunctionResult("withdrawWinnings", contentInfo);
-        // if(contentInfo.length > 0) {
-        //     amountToCollect = contentInfo[0].amountAvailable.toBigInt();
-        // }
         const query = contractPublic.methods.withdrawWinnings(roundId);
         const encodedABI = query.encodeABI();
         const gasPrice = Web3.utils.toHex(await web3.eth.getGasPrice());
 
-        const paramsForEIP1559 = { from: account, 
+        const paramsForEIP1559 = { 
+            from: account, 
             to: contractNetwork,
             data: encodedABI,
-            gasLimit: '0x5208'};
+            //gasLimit: '0x5208'
+        };
 
         var withdrawMoneyFromContentId = await ethereum
         .request({
@@ -832,7 +820,7 @@ async function withdrawMoney(roundId){
         await sleep(10000);
         //checkTx(withdrawMoneyFromContentId,web3);
 
-        await getContentList();
+        await getBetsByRound();
     }
 }
 
