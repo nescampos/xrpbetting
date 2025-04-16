@@ -553,78 +553,93 @@ async function getBets(){
         if(contentInfo[0].length > 0) {
             $('#my_contents').html('');
             console.log(contentInfo[0]);
-            // var list = document.querySelector('#my_contents');
-            //   var table = document.createElement('table');
-            //   var thead = document.createElement('thead');
-            //   var tbody = document.createElement('tbody');
+            var list = document.querySelector('#my_contents');
+              var table = document.createElement('table');
+              var thead = document.createElement('thead');
+              var tbody = document.createElement('tbody');
       
-            //   var theadTr = document.createElement('tr');
-            //   var balanceHeader = document.createElement('th');
-            //   balanceHeader.innerHTML = 'ID';
-            //   theadTr.appendChild(balanceHeader);
-            //   var contractNameHeader = document.createElement('th');
-            //   contractNameHeader.innerHTML = 'Name';
-            //   theadTr.appendChild(contractNameHeader);
-            //   var contractTickerHeader = document.createElement('th');
-            //   contractTickerHeader.innerHTML = 'Access cost';
-            //   theadTr.appendChild(contractTickerHeader);
+              var theadTr = document.createElement('tr');
+              var balanceHeader = document.createElement('th');
+              balanceHeader.innerHTML = 'ID';
+              theadTr.appendChild(balanceHeader);
+              var contractNameHeader = document.createElement('th');
+              contractNameHeader.innerHTML = 'Start Price';
+              theadTr.appendChild(contractNameHeader);
+              var contractTickerHeader = document.createElement('th');
+              contractTickerHeader.innerHTML = 'Start Timestamp';
+              theadTr.appendChild(contractTickerHeader);
               
-            //   var usdHeader = document.createElement('th');
-            //   usdHeader.innerHTML = 'Is Protected?';
-            //   theadTr.appendChild(usdHeader);
+              var usdHeader = document.createElement('th');
+              usdHeader.innerHTML = 'Is Open to bet?';
+              theadTr.appendChild(usdHeader);
 
-            //   var usdHeader2 = document.createElement('th');
-            //   usdHeader2.innerHTML = 'Available amount';
-            //   theadTr.appendChild(usdHeader2);
+              var usdHeader2 = document.createElement('th');
+              usdHeader2.innerHTML = 'Final Timestamp';
+              theadTr.appendChild(usdHeader2);
 
-            //   var usdHeader3 = document.createElement('th');
-            //   usdHeader3.innerHTML = 'Collected amount';
-            //   theadTr.appendChild(usdHeader3);
+              var usdHeader3 = document.createElement('th');
+              usdHeader3.innerHTML = 'Total for Down';
+              theadTr.appendChild(usdHeader3);
 
-            //   var usdHeaderOptions = document.createElement('th');
-            //   usdHeaderOptions.innerHTML = 'Options';
-            //   theadTr.appendChild(usdHeaderOptions);
+              var usdHeaderOptions = document.createElement('th');
+              usdHeaderOptions.innerHTML = 'Total for Up';
+              theadTr.appendChild(usdHeaderOptions);
+
+              var usdHeaderOptions1 = document.createElement('th');
+              usdHeaderOptions1.innerHTML = 'Final price';
+              theadTr.appendChild(usdHeaderOptions1);
+
+              var usdHeaderOptions2 = document.createElement('th');
+              usdHeaderOptions2.innerHTML = 'Settled? ';
+              theadTr.appendChild(usdHeaderOptions2);
+
+              var usdHeaderOptions3 = document.createElement('th');
+              usdHeaderOptions3.innerHTML = 'Bets';
+              theadTr.appendChild(usdHeaderOptions3);
       
-            //   thead.appendChild(theadTr)
+              thead.appendChild(theadTr)
       
-            //   table.className = 'table';
-            //   table.appendChild(thead);
+              table.className = 'table';
+              table.appendChild(thead);
       
-            //   contentInfo[0].forEach((valor, clave) => {
-            //     var tbodyTr = document.createElement('tr');
-            //     var contractTd = document.createElement('td');
-            //     contractTd.innerHTML = "<b>"+valor.sequenceId+"</b>";
-            //     tbodyTr.appendChild(contractTd);
-            //     var contractTickerTd = document.createElement('td');
-            //     contractTickerTd.innerHTML = '<b>' + valor.name + '</b>';
-            //     tbodyTr.appendChild(contractTickerTd);
-            //     var balanceTd = document.createElement('td');
-            //     balanceTd.innerHTML = '<b>' + Web3.utils.fromWei(valor.accessCost,"ether") + '</b>';
-            //     tbodyTr.appendChild(balanceTd);
-            //     var balanceUSDTd = document.createElement('td');
-            //     balanceUSDTd.innerHTML = '<b>' + valor.isProtected + '</b>';
-            //     tbodyTr.appendChild(balanceUSDTd);
-            //     var balanceUSDTd2 = document.createElement('td');
-            //     balanceUSDTd2.innerHTML = '<b>' + Web3.utils.fromWei(valor.amountAvailable,"ether") + '</b>';
-            //     tbodyTr.appendChild(balanceUSDTd2);
-            //     var balanceUSDTd3 = document.createElement('td');
-            //     balanceUSDTd3.innerHTML = '<b>' + Web3.utils.fromWei(valor.amountCollected,"ether") + '</b>';
-            //     tbodyTr.appendChild(balanceUSDTd3);
-            //     var balanceUSDTdOption2 = document.createElement('td');
-            //     balanceUSDTdOption2.innerHTML = '<input type="button" id="copyMonetizadoTagButton" onclick="getMonetizadoTag('+valor.sequenceId+')" value="Copy Monetizado tag to clipboard" class="btn btn-secondary btn-block" />';
-            //     tbodyTr.appendChild(balanceUSDTdOption2);
-            //     var balanceUSDTdOption3 = document.createElement('td');
-            //     balanceUSDTdOption3.innerHTML = '<input type="button" id="collectMoneyButton" onclick="collectMoney('+valor.sequenceId+')" value="Collect money" class="btn btn-secondary btn-block" />';
-            //     tbodyTr.appendChild(balanceUSDTdOption3);
-            //     var balanceUSDTdOption1 = document.createElement('td');
-            //     balanceUSDTdOption1.innerHTML = valor.isProtected == true? '<input type="button" id="releaseContentButton" onclick="releaseContent('+valor.sequenceId+')" value="Release content" class="btn btn-secondary btn-block" />' : '<input type="button" id="protectContentButton" onclick="protectContent('+valor.sequenceId+')" value="Protect content" class="btn btn-secondary btn-block" />';
-            //     tbodyTr.appendChild(balanceUSDTdOption1);
-            //     tbody.appendChild(tbodyTr);
-            // });
+              contentInfo[0].forEach((valor, clave) => {
+                var tbodyTr = document.createElement('tr');
+                var contractTd = document.createElement('td');
+                contractTd.innerHTML = "<b>"+valor.id+"</b>";
+                tbodyTr.appendChild(contractTd);
+                var contractTickerTd = document.createElement('td');
+                contractTickerTd.innerHTML = '<b>' + valor.referencePrice + '</b>';
+                tbodyTr.appendChild(contractTickerTd);
+                var balanceTd = document.createElement('td');
+                balanceTd.innerHTML = '<b>' + valor.referenceTimestamp + '</b>';
+                tbodyTr.appendChild(balanceTd);
+                var balanceUSDTd = document.createElement('td');
+                balanceUSDTd.innerHTML = '<b>' + valor.bettingOpen + '</b>';
+                tbodyTr.appendChild(balanceUSDTd);
+                var balanceUSDTd2 = document.createElement('td');
+                balanceUSDTd2.innerHTML = '<b>' + valor.settlementTime + '</b>';
+                tbodyTr.appendChild(balanceUSDTd2);
+                var balanceUSDTd3 = document.createElement('td');
+                balanceUSDTd3.innerHTML = '<b>' + valor.totalDown + '</b>';
+                tbodyTr.appendChild(balanceUSDTd3);
+                var balanceUSDTdOption2 = document.createElement('td');
+                balanceUSDTdOption2.innerHTML = '<b>' + valor.totalUp + '</b>';
+                tbodyTr.appendChild(balanceUSDTdOption2);
+                var balanceUSDTdOption3 = document.createElement('td');
+                balanceUSDTdOption3.innerHTML = '<b>' + valor.finalPrice + '</b>';
+                tbodyTr.appendChild(balanceUSDTdOption3);
+                var balanceUSDTdOption1 = document.createElement('td');
+                balanceUSDTdOption1.innerHTML = '<b>' + valor.settled + '</b>';
+                tbodyTr.appendChild(balanceUSDTdOption1);
+                var balanceUSDTdOption10 = document.createElement('td');
+                balanceUSDTdOption10.innerHTML = '<b>' + valor.bets.length + '</b>';
+                tbodyTr.appendChild(balanceUSDTdOption10);
+                tbody.appendChild(tbodyTr);
+            });
       
-            // table.appendChild(tbody);
+            table.appendChild(tbody);
       
-            //   list.appendChild(table);
+              list.appendChild(table);
           }
           //$('.loading_message').css('display','none');
         }
