@@ -736,14 +736,14 @@ async function getBetsByRound(){
             } else {
                 $("#open").css("display","block");
             }
-            $("#roundId").val(roundInfo.id);
-            $("#openBet").val((roundInfo.bettingOpen? "Yes":"No"));
-            $("#startTime").val((new Date(roundInfo.referenceTimestamp*1000)).toUTCString());
-            $("#startPrice").val((roundInfo.referencePrice/10**6));
-            $("#endTime").val((new Date(roundInfo.settlementTime*1000)).toUTCString());
-            $("#endPrice").val((roundInfo.settled? (roundInfo.finalPrice/10**6) : "-"));
-            $("#totalFor").val((roundInfo.totalUp/10**18));
-            $("#totalAgainst").val((roundInfo.totalDown/10**18));
+            $("#roundId").text(roundInfo.id);
+            $("#openBet").text((roundInfo.bettingOpen? "Yes":"No"));
+            $("#startTime").text((new Date(roundInfo.referenceTimestamp*1000)).toUTCString());
+            $("#startPrice").text((roundInfo.referencePrice/10**6));
+            $("#endTime").text((new Date(roundInfo.settlementTime*1000)).toUTCString());
+            $("#endPrice").text((roundInfo.settled? (roundInfo.finalPrice/10**6) : "-"));
+            $("#totalFor").text((roundInfo.totalUp/10**18));
+            $("#totalAgainst").text((roundInfo.totalDown/10**18));
         }
 
         var contentInfo = await ethereum
