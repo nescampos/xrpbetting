@@ -615,13 +615,13 @@ async function getBets(){
                 contractTickerTd.innerHTML = '<b> US$' + (valor.referencePrice/10**6) + '</b>';
                 tbodyTr.appendChild(contractTickerTd);
                 var balanceTd = document.createElement('td');
-                balanceTd.innerHTML = '<b>' + (new Date(valor.referenceTimestamp*1000)).toString() + '</b>';
+                balanceTd.innerHTML = '<b>' + (new Date(valor.referenceTimestamp*1000)).toUTCString() + '</b>';
                 tbodyTr.appendChild(balanceTd);
                 var balanceUSDTd = document.createElement('td');
                 balanceUSDTd.innerHTML = '<b>' + (valor.bettingOpen? "Yes":"No") + '</b>';
                 tbodyTr.appendChild(balanceUSDTd);
                 var balanceUSDTd2 = document.createElement('td');
-                balanceUSDTd2.innerHTML = '<b>' + (new Date(valor.settlementTime*1000)).toString() + '</b>';
+                balanceUSDTd2.innerHTML = '<b>' + (new Date(valor.settlementTime*1000)).toUTCString() + '</b>';
                 tbodyTr.appendChild(balanceUSDTd2);
                 var balanceUSDTd3 = document.createElement('td');
                 balanceUSDTd3.innerHTML = '<b>' + valor.totalDown + '</b>';
@@ -643,7 +643,7 @@ async function getBets(){
                 if (valor.settled == false && new Date(valor.settlementTime*1000) < new Date()) {
                     fullHTML += '<button class="btn btn-info" onclick="settleBet('+valor.id+')">Settle round</button>';
                 }
-                balanceUSDTdOption11.innerHTML = '';
+                balanceUSDTdOption11.innerHTML = fullHTML;
                 tbodyTr.appendChild(balanceUSDTdOption11);
                 tbody.appendChild(tbodyTr);
             });
