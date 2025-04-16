@@ -678,8 +678,8 @@ async function settleBet(roundId){
         const paramsForEIP1559 = { from: account, 
             to: contractNetwork,
             data: encodedABI,
-            value: valueInWei,
-            maxPriorityFeePerGas: gasPrice,
+            value: Web3.utils.toHex(1000000000),
+            //maxPriorityFeePerGas: gasPrice,
             gasLimit: '0x5208'};
 
         var unprotectContentId = await ethereum
