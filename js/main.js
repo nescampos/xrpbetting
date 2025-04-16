@@ -641,7 +641,7 @@ async function getBets(){
                 var balanceUSDTdOption11 = document.createElement('td');
                 var fullHTML = '';
                 if (valor.settled == false && new Date(valor.settlementTime*1000) < new Date()) {
-                    fullHTML += '<button class="btn btn-info" onclick="settleBet('+valor.id+')">Settle round</button>';
+                    fullHTML += '<button class="btn btn-info" onclick="settleBet('+(valor.id - 1)+')">Settle round</button>';
                 }
                 balanceUSDTdOption11.innerHTML = fullHTML;
                 tbodyTr.appendChild(balanceUSDTdOption11);
@@ -673,11 +673,13 @@ async function settleBet(roundId){
         const query = contractPublic.methods.settleRound(roundId);
         const encodedABI = query.encodeABI();
         const valueInWei = Web3.utils.toHex(Web3.utils.toWei("0.001", "ether"));
+        const gasPrice = web3.utils.toHex(await web3.eth.getGasPrice());
 
         const paramsForEIP1559 = { from: account, 
             to: contractNetwork,
             data: encodedABI,
             value: valueInWei,
+            maxPriorityFeePerGas: gasPrice,
             gasLimit: '0x5208'};
 
         var unprotectContentId = await ethereum
@@ -689,6 +691,7 @@ async function settleBet(roundId){
             });
 
         await getBets();
+        return false;
     }
 }
 
