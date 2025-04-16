@@ -853,88 +853,54 @@ async function withdrawMoney(){
     }
 }
 
-async function createContent() {
+async function bet() {
     var accounts = await ethereum.request({method: 'eth_requestAccounts'});
     var account = accounts[0];
+
+    var roundId = localStorage.getItem("roundbet");
+    var optionSelect = $('#optionSelect').val();
+    if(optionSelect === "") {
+        alert("Select an option");
+    }
+
+    var amount = $('#amountBet').val();
+    if(amount === "") {
+        alert("Select a amount");
+    }
     
-    var networkSelected = $('#networkSelector').val();
-    networkSelected = networkSelected != null? networkSelected : "arbitrum:sepolia";
 
-    const contractNetwork = networksContracts[networkSelected];
-    var networkSelectedProperties = networksProperties[networkSelected];
-
-    var web3 = new Web3(new Web3.providers.HttpProvider(networkSelectedProperties.urlRPC));
+    const contractNetwork = xrpBettingContractId;
+    var web3 = new Web3(new Web3.providers.HttpProvider("https://coston2-api.flare.network/ext/C/rpc"));
 
     var contractPublic = await getContract(web3,contractNetwork,account);
 
-    const networkName = networkSelected.split(':')[0];
+    var realOption = optionSelect == "false" ? false : true;
+    var realAmount = BigInt(amount) * 10**18;
 
-    const isEIP1559 = networksEIP1559.includes(networkName);
-
-    if(contractPublic != null) {
-      var contentName = $('#content_name').val();
-      if(contentName == '') {
-        $('#errorCreateContent').css("display","block");
-        $('#errorCreateContent').text("Content name is invalid");
-        return;
-      }
-      var contentAmount = $('#content_amount').val();
-      if(contentAmount == '' || contentAmount < 0) {
-        $('#errorCreateContent').css("display","block");
-        $('#errorCreateContent').text("The amount to pay is not valid.");
-        return;
-      }
-      try
-      {
-        $('.loading_message_creating').css("display","block");
-        contentAmount = web3.utils.toWei(contentAmount,"ether");
-        const query = contractPublic.methods.addProtectedContent(contentName, contentAmount);
+    if(contractPublic != undefined) {
+        const query = contractPublic.methods.placeBet(roundId, realOption);
         const encodedABI = query.encodeABI();
-        const gasPrice = web3.utils.toHex(await web3.eth.getGasPrice());
+        const gasPrice = Web3.utils.toHex(await web3.eth.getGasPrice());
+        
 
-        const paramsForEIP1559 = isEIP1559 ? {
+        const paramsForEIP1559 = { 
             from: account, 
             to: contractNetwork,
+            value: Web3.utils.toHex(realAmount),
             data: encodedABI,
-            gasLimit: '0x5208',
-            maxPriorityFeePerGas: gasPrice, 
-            maxFeePerGas: gasPrice
-        } : { from: account, 
-            to: contractNetwork,
-            data: encodedABI,
-            gasLimit: '0x5208'};
+            //gasLimit: '0x5208'
+        };
 
-        var createContentId = await ethereum
-            .request({
-            method: 'eth_sendTransaction',
-            params: [
-                paramsForEIP1559
-            ],
+        var withdrawMoneyFromContentId = await ethereum
+        .request({
+        method: 'eth_sendTransaction',
+        params: [
+            paramsForEIP1559
+        ],
         });
         await sleep(10000);
-        //checkTx(createContentId,web3);
-        
-        var contentCreated = await web3.eth.getTransactionReceipt(createContentId);
-        if(contentCreated == null) {
-          $('#successCreateContent').css("display","none");
-          $('.invalid-feedback').css("display","block");
-          $('.invalid-feedback').text("Error creating the content");
-          return;
-        }
-        
-        $('#content_name').val('');
-        $('#amount_name').val('');
-        $('#errorCreateContent').css("display","none");
-        $('.loading_message_creating').css("display","none");
-        $('#successCreateContent').css("display","block");
-        $('#successCreateContent').text("Content created successfully with the name: " + contentName);
-      } catch(e) {
-        $('.valid-feedback').css('display','none');
-          $('.invalid-feedback').css('display','block');
-          $('.loading_message_creating').css("display","none");
-          $('.invalid-feedback').text(e.message);
-      }
-      
-      
+        //checkTx(withdrawMoneyFromContentId,web3);
+
+        await getBetsByRound();
     }
   }

@@ -147,12 +147,17 @@
                                             Start time: <span id="startTime"></span> <br />
                                             Start price: US$<span id="startPrice"></span> <br />
                                             End time: <span id="endTime"></span> <br />
-                                            End price: <span id="endPrice"></span> <br />
+                                            End price: US$<span id="endPrice"></span> <br />
                                             Total for: <span id="totalFor"></span> <br />
                                             Total against: <span id="totalAgainst"></span> <br />
                                         </div>
                                         <div id="open" style="display: none;">
-
+                                            Amount (in FLR): <input type="text" id="amountBet" class="form-control" />
+                                            Option: <select class="form-control form-control-user" name="optionSelect" id="optionSelect" onchange="changeNetwork()">
+                                                <option value="false">For</option>
+                                                <option value="true">Against</option>
+                                             </select>
+                                            <button class="btn btn-primary" onclick="bet()">Bet</button>
                                         </div>
                                         <div id="close" style="display: none;">
                                             <button class="btn btn-primary" onclick="withdrawMoney()">Withdraw money/prizes</button>
