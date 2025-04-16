@@ -501,7 +501,7 @@ async function changeNetwork() {
                 method: 'wallet_switchEthereumChain',
                 params: [{ chainId: Web3.utils.toHex(114) }]
             });
-            await getContentList();
+            await getBets();
         } catch (err) {
             // This error code indicates that the chain has not been added to MetaMask
             if (err.code === 4902) {
@@ -608,16 +608,16 @@ async function getBets(){
                 contractTd.innerHTML = "<b>"+valor.id+"</b>";
                 tbodyTr.appendChild(contractTd);
                 var contractTickerTd = document.createElement('td');
-                contractTickerTd.innerHTML = '<b>' + valor.referencePrice + '</b>';
+                contractTickerTd.innerHTML = '<b>' + (valor.referencePrice/10**6) + '</b>';
                 tbodyTr.appendChild(contractTickerTd);
                 var balanceTd = document.createElement('td');
-                balanceTd.innerHTML = '<b>' + valor.referenceTimestamp + '</b>';
+                balanceTd.innerHTML = '<b>' + (new Date(valor.referenceTimestamp)).toString() + '</b>';
                 tbodyTr.appendChild(balanceTd);
                 var balanceUSDTd = document.createElement('td');
-                balanceUSDTd.innerHTML = '<b>' + valor.bettingOpen + '</b>';
+                balanceUSDTd.innerHTML = '<b>' + (valor.bettingOpen? "Yes":"No") + '</b>';
                 tbodyTr.appendChild(balanceUSDTd);
                 var balanceUSDTd2 = document.createElement('td');
-                balanceUSDTd2.innerHTML = '<b>' + valor.settlementTime + '</b>';
+                balanceUSDTd2.innerHTML = '<b>' + (new Date(valor.settlementTime)).toString() + '</b>';
                 tbodyTr.appendChild(balanceUSDTd2);
                 var balanceUSDTd3 = document.createElement('td');
                 balanceUSDTd3.innerHTML = '<b>' + valor.totalDown + '</b>';
@@ -626,10 +626,10 @@ async function getBets(){
                 balanceUSDTdOption2.innerHTML = '<b>' + valor.totalUp + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption2);
                 var balanceUSDTdOption3 = document.createElement('td');
-                balanceUSDTdOption3.innerHTML = '<b>' + valor.finalPrice + '</b>';
+                balanceUSDTdOption3.innerHTML = '<b>' + (valor.finalPrice/10**6) + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption3);
                 var balanceUSDTdOption1 = document.createElement('td');
-                balanceUSDTdOption1.innerHTML = '<b>' + valor.settled + '</b>';
+                balanceUSDTdOption1.innerHTML = '<b>' + (valor.settled?"Yes":"No") + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption1);
                 var balanceUSDTdOption10 = document.createElement('td');
                 balanceUSDTdOption10.innerHTML = '<b>' + valor.bets.length + '</b>';
