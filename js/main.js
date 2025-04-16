@@ -596,6 +596,10 @@ async function getBets(){
               var usdHeaderOptions3 = document.createElement('th');
               usdHeaderOptions3.innerHTML = 'Bets';
               theadTr.appendChild(usdHeaderOptions3);
+
+              var usdHeaderOptions3 = document.createElement('th');
+              usdHeaderOptions3.innerHTML = 'Options';
+              theadTr.appendChild(usdHeaderOptions3);
       
               thead.appendChild(theadTr)
       
@@ -608,16 +612,16 @@ async function getBets(){
                 contractTd.innerHTML = "<b>"+valor.id+"</b>";
                 tbodyTr.appendChild(contractTd);
                 var contractTickerTd = document.createElement('td');
-                contractTickerTd.innerHTML = '<b>' + (valor.referencePrice/10**6) + '</b>';
+                contractTickerTd.innerHTML = '<b> US$' + (valor.referencePrice/10**6) + '</b>';
                 tbodyTr.appendChild(contractTickerTd);
                 var balanceTd = document.createElement('td');
-                balanceTd.innerHTML = '<b>' + (new Date(valor.referenceTimestamp)).toString() + '</b>';
+                balanceTd.innerHTML = '<b>' + (new Date(valor.referenceTimestamp*1000)).toString() + '</b>';
                 tbodyTr.appendChild(balanceTd);
                 var balanceUSDTd = document.createElement('td');
                 balanceUSDTd.innerHTML = '<b>' + (valor.bettingOpen? "Yes":"No") + '</b>';
                 tbodyTr.appendChild(balanceUSDTd);
                 var balanceUSDTd2 = document.createElement('td');
-                balanceUSDTd2.innerHTML = '<b>' + (new Date(valor.settlementTime)).toString() + '</b>';
+                balanceUSDTd2.innerHTML = '<b>' + (new Date(valor.settlementTime*1000)).toString() + '</b>';
                 tbodyTr.appendChild(balanceUSDTd2);
                 var balanceUSDTd3 = document.createElement('td');
                 balanceUSDTd3.innerHTML = '<b>' + valor.totalDown + '</b>';
@@ -626,7 +630,7 @@ async function getBets(){
                 balanceUSDTdOption2.innerHTML = '<b>' + valor.totalUp + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption2);
                 var balanceUSDTdOption3 = document.createElement('td');
-                balanceUSDTdOption3.innerHTML = '<b>' + (valor.finalPrice/10**6) + '</b>';
+                balanceUSDTdOption3.innerHTML = '<b> US$' + (valor.settled? (valor.finalPrice/10**6) : "-") + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption3);
                 var balanceUSDTdOption1 = document.createElement('td');
                 balanceUSDTdOption1.innerHTML = '<b>' + (valor.settled?"Yes":"No") + '</b>';
@@ -634,6 +638,13 @@ async function getBets(){
                 var balanceUSDTdOption10 = document.createElement('td');
                 balanceUSDTdOption10.innerHTML = '<b>' + valor.bets.length + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption10);
+                var balanceUSDTdOption11 = document.createElement('td');
+                var fullHTML = '';
+                if (valor.settled == false && new Date(valor.settlementTime*1000) < new Date()) {
+                    fullHTML += '<button class="btn btn-info" onclick="settleBet('+valor.id+')">Settle round</button>';
+                }
+                balanceUSDTdOption11.innerHTML = '';
+                tbodyTr.appendChild(balanceUSDTdOption11);
                 tbody.appendChild(tbodyTr);
             });
       
@@ -647,39 +658,26 @@ async function getBets(){
     
 }
 
-async function releaseContent(sequenceId){
+async function settleBet(roundId){
     var accounts = await ethereum.request({method: 'eth_requestAccounts'});
     var account = accounts[0];
     
-    var networkSelected = $('#networkSelector').val();
-    networkSelected = networkSelected != null? networkSelected : "arbitrum:sepolia";
 
-    const contractNetwork = networksContracts[networkSelected];
-    var networkSelectedProperties = networksProperties[networkSelected];
+    const contractNetwork = xrpBettingContractId;
 
-    var web3 = new Web3(new Web3.providers.HttpProvider(networkSelectedProperties.urlRPC));
+    var web3 = new Web3(new Web3.providers.HttpProvider("https://coston2-api.flare.network/ext/C/rpc"));
 
     var contractPublic = await getContract(web3,contractNetwork,account);
 
-    const networkName = networkSelected.split(':')[0];
-
-    const isEIP1559 = networksEIP1559.includes(networkName);
-
     if(contractPublic != undefined) {
-        const query = contractPublic.methods.unprotectContent(sequenceId);
+        const query = contractPublic.methods.settleRound(roundId);
         const encodedABI = query.encodeABI();
-        const gasPrice = Web3.utils.toHex(await web3.eth.getGasPrice());
+        const valueInWei = Web3.utils.toHex(Web3.utils.toWei("0.001", "ether"));
 
-        const paramsForEIP1559 = isEIP1559 ? {
-            from: account, 
+        const paramsForEIP1559 = { from: account, 
             to: contractNetwork,
             data: encodedABI,
-            gasLimit: '0x5208',
-            maxPriorityFeePerGas: gasPrice, 
-            maxFeePerGas: gasPrice
-        } : { from: account, 
-            to: contractNetwork,
-            data: encodedABI,
+            value: valueInWei,
             gasLimit: '0x5208'};
 
         var unprotectContentId = await ethereum
@@ -690,7 +688,7 @@ async function releaseContent(sequenceId){
             ],
             });
 
-        await getContentList();
+        await getBets();
     }
 }
 
