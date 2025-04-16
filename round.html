@@ -142,9 +142,22 @@
                                     <!-- Card Body -->
                                     <div class="card-body ">
                                         <div id="round_details">
-                                            
+                                            Round Id: <span id="roundId"></span>
+                                            Open to bet: <span id="openBet"></span>
+                                            Start time: <span id="startTime"></span>
+                                            Start price: US$<span id="startPrice"></span>
+                                            End time: <span id="endTime"></span>
+                                            End price: <span id="endPrice"></span>
+                                            Total for: <span id="totalFor"></span>
+                                            Total against: <span id="totalAgainst"></span>
                                         </div>
-                                        <button class="btn btn-primary" onclick="withdrawMoney()">Withdraw money/prizes</button>
+                                        <div id="open" style="display: none;">
+
+                                        </div>
+                                        <div id="close" style="display: none;">
+                                            <button class="btn btn-primary" onclick="withdrawMoney()">Withdraw money/prizes</button>
+                                        </div>
+                                        
                                     </div>
                                 </div>
                                 

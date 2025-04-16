@@ -717,6 +717,35 @@ async function getBetsByRound(){
     var roundId = localStorage.getItem("roundbet");
 
     if(contractPublic != undefined) {
+
+        var roundInfo = await ethereum
+            .request({
+                method: 'eth_call',
+                params: [
+                {
+                    from: account, // The user's active address.
+                    data: contractPublic.methods.rounds(roundId).encodeABI(),
+                    to: contractNetwork
+                },
+                ],
+            });
+        roundInfo = iface.decodeFunctionResult("rounds", roundInfo);
+        if(roundInfo != null) {
+            if(roundInfo.settled) {
+                $("#close").css("display","block");
+            } else {
+                $("#open").css("display","block");
+            }
+            $("#roundId").val(roundInfo.id);
+            $("#openBet").val((roundInfo.bettingOpen? "Yes":"No"));
+            $("#startTime").val((new Date(roundInfo.referenceTimestamp*1000)).toUTCString());
+            $("#startPrice").val((roundInfo.referencePrice/10**6));
+            $("#endTime").val((new Date(roundInfo.settlementTime*1000)).toUTCString());
+            $("#endPrice").val((roundInfo.settled? (roundInfo.finalPrice/10**6) : "-"));
+            $("#totalFor").val((roundInfo.totalUp/10**18));
+            $("#totalAgainst").val((roundInfo.totalDown/10**18));
+        }
+
         var contentInfo = await ethereum
         .request({
             method: 'eth_call',
