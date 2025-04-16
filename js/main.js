@@ -467,7 +467,7 @@ const xrpBettingAbi = [
 
 
 async function getContract(web3,contractNetwork, userAddress) {
-    var contractPublic = await new web3.eth.Contract(monetizadoAbi,contractNetwork);
+    var contractPublic = await new web3.eth.Contract(xrpBettingAbi,contractNetwork);
     if(userAddress != null && userAddress != undefined) {
         contractPublic.defaultAccount = userAddress;
     }
@@ -530,8 +530,6 @@ async function getBets(){
     var accounts = await ethereum.request({method: 'eth_requestAccounts'});
     var account = accounts[0];
     
-    var networkSelected = $('#networkSelector').val();
-    networkSelected = networkSelected != null? networkSelected : "arbitrum:sepolia";
 
     const contractNetwork = xrpBettingContractId;
 
