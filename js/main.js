@@ -875,7 +875,7 @@ async function bet() {
     var contractPublic = await getContract(web3,contractNetwork,account);
 
     var realOption = optionSelect == "false" ? false : true;
-    var realAmount = BigInt(amount) * 10**18;
+    var realAmount = BigInt(amount) * BigInt(10**18);
 
     if(contractPublic != undefined) {
         const query = contractPublic.methods.placeBet(roundId, realOption);
