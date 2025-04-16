@@ -643,6 +643,7 @@ async function getBets(){
                 if (valor.settled == false && new Date(valor.settlementTime*1000) < new Date()) {
                     fullHTML += '<button class="btn btn-info" onclick="settleBet('+(valor.id - 1)+')">Settle round</button>';
                 }
+                fullHTML += '<button class="btn btn-success" onclick="selectRound('+(valor.id - 1)+')">Details</button>';
                 balanceUSDTdOption11.innerHTML = fullHTML;
                 tbodyTr.appendChild(balanceUSDTdOption11);
                 tbody.appendChild(tbodyTr);
