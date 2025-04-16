@@ -552,7 +552,7 @@ async function getBets(){
         contentInfo = iface.decodeFunctionResult("getAllRounds", contentInfo);
         if(contentInfo[0].length > 0) {
             $('#my_contents').html('');
-            console.log(contentInfo[0]);
+            //console.log(contentInfo[0]);
             var list = document.querySelector('#my_contents');
               var table = document.createElement('table');
               var thead = document.createElement('thead');
@@ -678,9 +678,10 @@ async function settleBet(roundId){
         const paramsForEIP1559 = { from: account, 
             to: contractNetwork,
             data: encodedABI,
-            value: Web3.utils.toHex(1000000000),
+            value: Web3.utils.toHex(1000000000000),
             //maxPriorityFeePerGas: gasPrice,
-            gasLimit: '0x5208'};
+            //gasLimit: '0x5208'
+        };
 
         var unprotectContentId = await ethereum
             .request({
@@ -690,56 +691,98 @@ async function settleBet(roundId){
             ],
             });
 
+        await sleep(5000);
         await getBets();
         return false;
     }
 }
 
-async function protectContent(sequenceId){
+function selectRound(roundId) {
+    localStorage.setItem("roundbet",roundId);
+    location.href = "./round.html";
+}
+
+async function getBetsByRound(){
     var accounts = await ethereum.request({method: 'eth_requestAccounts'});
     var account = accounts[0];
     
-    var networkSelected = $('#networkSelector').val();
-    networkSelected = networkSelected != null? networkSelected : "arbitrum:sepolia";
 
-    const contractNetwork = networksContracts[networkSelected];
-    var networkSelectedProperties = networksProperties[networkSelected];
+    const contractNetwork = xrpBettingContractId;
 
-    var web3 = new Web3(new Web3.providers.HttpProvider(networkSelectedProperties.urlRPC));
+    var web3 = new Web3(new Web3.providers.HttpProvider("https://coston2-api.flare.network/ext/C/rpc"));
 
     var contractPublic = await getContract(web3,contractNetwork,account);
 
-    const networkName = networkSelected.split(':')[0];
-
-    const isEIP1559 = networksEIP1559.includes(networkName);
+    var roundId = localStorage.getItem("roundbet");
 
     if(contractPublic != undefined) {
-        const query = contractPublic.methods.protectContent(sequenceId);
-        const encodedABI = query.encodeABI();
-        const gasPrice = Web3.utils.toHex(await web3.eth.getGasPrice());
-
-        const paramsForEIP1559 = isEIP1559 ? {
-            from: account, 
-            to: contractNetwork,
-            data: encodedABI,
-            gasLimit: '0x5208',
-            maxPriorityFeePerGas: gasPrice, 
-            maxFeePerGas: gasPrice
-        } : { from: account, 
-            to: contractNetwork,
-            data: encodedABI,
-            gasLimit: '0x5208'};
-
-        var protectContentId = await ethereum
-            .request({
-            method: 'eth_sendTransaction',
+        var contentInfo = await ethereum
+        .request({
+            method: 'eth_call',
             params: [
-                paramsForEIP1559
+            {
+                from: account, // The user's active address.
+                data: contractPublic.methods.getBetsByRound(roundId).encodeABI(),
+                to: contractNetwork
+            },
             ],
-            });
+        });
+        contentInfo = iface.decodeFunctionResult("getBetsByRound", contentInfo);
+        if(contentInfo[0].length > 0) {
+            $('#my_contents').html('');
+            //console.log(contentInfo[0]);
+            var list = document.querySelector('#my_contents');
+              var table = document.createElement('table');
+              var thead = document.createElement('thead');
+              var tbody = document.createElement('tbody');
+      
+              var theadTr = document.createElement('tr');
+              var balanceHeader = document.createElement('th');
+              balanceHeader.innerHTML = 'Bettor';
+              theadTr.appendChild(balanceHeader);
+              var contractNameHeader = document.createElement('th');
+              contractNameHeader.innerHTML = 'Option';
+              theadTr.appendChild(contractNameHeader);
+              var contractTickerHeader = document.createElement('th');
+              contractTickerHeader.innerHTML = 'Amount';
+              theadTr.appendChild(contractTickerHeader);
+              
+              var usdHeader = document.createElement('th');
+              usdHeader.innerHTML = 'Claimed?';
+              theadTr.appendChild(usdHeader);
 
-        await getContentList();
-    }
+      
+              thead.appendChild(theadTr)
+      
+              table.className = 'table';
+              table.appendChild(thead);
+      
+              contentInfo[0].forEach((valor, clave) => {
+                var tbodyTr = document.createElement('tr');
+                var contractTd = document.createElement('td');
+                contractTd.innerHTML = "<b>"+valor.bettor+"</b>";
+                tbodyTr.appendChild(contractTd);
+                var contractTickerTd = document.createElement('td');
+                contractTickerTd.innerHTML = '<b> US$' + (valor.betIsDown ? "Against":"For") + '</b>';
+                tbodyTr.appendChild(contractTickerTd);
+                var balanceTd = document.createElement('td');
+                balanceTd.innerHTML = '<b>' + Web3.utils.fromWei(valor.amount,"ether") + '</b>';
+                tbodyTr.appendChild(balanceTd);
+                
+                var balanceUSDTdOption11 = document.createElement('td');
+                balanceUSDTdOption11.innerHTML = '<b> US$' + (valor.claimed ? "Yes":"No") + '</b>';;
+                tbodyTr.appendChild(balanceUSDTdOption11);
+                tbody.appendChild(tbodyTr);
+            });
+      
+            table.appendChild(tbody);
+      
+              list.appendChild(table);
+          }
+          //$('.loading_message').css('display','none');
+        }
+        //return contentInfo;
+    
 }
 
 async function withdrawMoney(roundId){
