@@ -578,11 +578,11 @@ async function getBets(){
               theadTr.appendChild(usdHeader2);
 
               var usdHeader3 = document.createElement('th');
-              usdHeader3.innerHTML = 'Total for Down';
+              usdHeader3.innerHTML = 'Total for Down (FLR)';
               theadTr.appendChild(usdHeader3);
 
               var usdHeaderOptions = document.createElement('th');
-              usdHeaderOptions.innerHTML = 'Total for Up';
+              usdHeaderOptions.innerHTML = 'Total for Up (FLR)';
               theadTr.appendChild(usdHeaderOptions);
 
               var usdHeaderOptions1 = document.createElement('th');
@@ -624,10 +624,10 @@ async function getBets(){
                 balanceUSDTd2.innerHTML = '<b>' + (new Date(valor.settlementTime*1000)).toUTCString() + '</b>';
                 tbodyTr.appendChild(balanceUSDTd2);
                 var balanceUSDTd3 = document.createElement('td');
-                balanceUSDTd3.innerHTML = '<b>' + valor.totalDown + '</b>';
+                balanceUSDTd3.innerHTML = '<b>' + (valor.totalDown / 10**18) + '</b>';
                 tbodyTr.appendChild(balanceUSDTd3);
                 var balanceUSDTdOption2 = document.createElement('td');
-                balanceUSDTdOption2.innerHTML = '<b>' + valor.totalUp + '</b>';
+                balanceUSDTdOption2.innerHTML = '<b>' + (valor.totalUp / 10**18) + '</b>';
                 tbodyTr.appendChild(balanceUSDTdOption2);
                 var balanceUSDTdOption3 = document.createElement('td');
                 balanceUSDTdOption3.innerHTML = '<b> US$' + (valor.settled? (valor.finalPrice/10**6) : "-") + '</b>';
@@ -774,7 +774,7 @@ async function getBetsByRound(){
               contractNameHeader.innerHTML = 'Option';
               theadTr.appendChild(contractNameHeader);
               var contractTickerHeader = document.createElement('th');
-              contractTickerHeader.innerHTML = 'Amount';
+              contractTickerHeader.innerHTML = 'Amount (in FLR)';
               theadTr.appendChild(contractTickerHeader);
               
               var usdHeader = document.createElement('th');
@@ -793,14 +793,14 @@ async function getBetsByRound(){
                 contractTd.innerHTML = "<b>"+valor.bettor+"</b>";
                 tbodyTr.appendChild(contractTd);
                 var contractTickerTd = document.createElement('td');
-                contractTickerTd.innerHTML = '<b> US$' + (valor.betIsDown ? "Against":"For") + '</b>';
+                contractTickerTd.innerHTML = '<b> ' + (valor.betIsDown ? "Against":"For") + '</b>';
                 tbodyTr.appendChild(contractTickerTd);
                 var balanceTd = document.createElement('td');
                 balanceTd.innerHTML = '<b>' + Web3.utils.fromWei(valor.amount,"ether") + '</b>';
                 tbodyTr.appendChild(balanceTd);
                 
                 var balanceUSDTdOption11 = document.createElement('td');
-                balanceUSDTdOption11.innerHTML = '<b> US$' + (valor.claimed ? "Yes":"No") + '</b>';;
+                balanceUSDTdOption11.innerHTML = '<b> ' + (valor.claimed ? "Yes":"No") + '</b>';;
                 tbodyTr.appendChild(balanceUSDTdOption11);
                 tbody.appendChild(tbodyTr);
             });
