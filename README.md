@@ -10,6 +10,8 @@ Testnet: https://nescampos.github.io/xrpbetting/
 - XRPBetting Contract: [0x3F719F49b7d2401f4e14675496eb7841F80AAa95](https://coston2-explorer.flare.network/address/0x3F719F49b7d2401f4e14675496eb7841F80AAa95)
 - Feed Consumer (for XRP/USD price): [0x3258814758AC48fE9c0869d43Df8F13aD0cB2A25](https://coston2-explorer.flare.network/address/0x3258814758AC48fE9c0869d43Df8F13aD0cB2A25)
 
+Video demo: https://www.youtube.com/watch?v=slvsoK6W0ng
+
 
 ## How works?
 XRPBetting works in testnet (**Coston2**) as follows:
